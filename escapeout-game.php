@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       EscapeOut Game
  * Description:       Allows user to create a game
- * Version:           0.1.8
+ * Version:           0.1.9
  * Requires at least: 6.6
  * Requires PHP:      7.2
  * Author:            EscapeOut.Games
