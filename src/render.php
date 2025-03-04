@@ -299,13 +299,13 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
         >
 			<?php esc_html_e( 'Leaderboard', 'escapeout-game' ); ?>
         </button>
-        <button class="button"
+        <!--<button class="button"
                 data-wp-on-async--click="actions.toggleLeaderBoard"
-                aria-controls="<?php echo esc_attr( $unique_id ); ?>"
+                aria-controls="<?php //echo esc_attr( $unique_id ); ?>"
                 style="background-color:<?php echo $attributes['textColor'];?>; color:<?php echo $attributes['bgColor']?>"
         >
-            <?php esc_html_e( 'Comments', 'escapeout-game' ); ?>
-        </button>
+            <?php //esc_html_e( 'Comments', 'escapeout-game' ); ?>
+        </button>-->
         <hr/>
         <div class="details">
             <ul>

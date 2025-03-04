@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       EscapeOut Game
  * Description:       Allows user to create a game
- * Version:           0.1.9
+ * Version:           0.1.9.1
  * Requires at least: 6.6
  * Requires PHP:      7.2
  * Author:            EscapeOut.Games
@@ -201,13 +201,25 @@ function escapeout_register_routes() {
 
 //https://developer.wordpress.org/reference/functions/wp_mail/
 function escapeout_send_email( $request) {
-    $to = $request['to'];
-    $subject = $request['subject'];
-    $message = $request['message'];
+    $to = $request['designerEmail'];
+    $userEmail = $request['userEmail'];
+    $inputPublic = $request['inputPublic'];
+    $inputPrivate = $request['inputPrivate'];
+    $rating = $request['rating'];
+    $gameName = $request['gameName'];
+    $gameSlug = $request['gameSlug'];
+    $gameScore = $request['gameScore'];
     $headers = array('Content-Type: text/html; charset=UTF-8');
+    $subject = "EsccapeOut.games - Game Comments: " . $gameName;
+    $message  = "Player: " . $userEmail ."<br />";
+    $message .= "Game Name: " . $gameName  ."<br />";
+    $message .= "Game Slug: " . $gameSlug     ."<br />";
+    $message .= "Private Comment: " . sanitize_textarea_field($inputPrivate)     ."<br />";
+    $message .= "Public Comment: " . sanitize_textarea_field($inputPublic)     ."<br />";
+    $message .= "Rating: " . $rating     ."<br />";
+    $message .= "Game Score: " . $gameScore     ."<br />";
 
     wp_mail($to, $subject, $message, $headers);
-    wp_die();
 }
 
 

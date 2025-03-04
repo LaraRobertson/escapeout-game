@@ -231,8 +231,7 @@ const saveScore = async (gameScoreID, nonce) => {
 		}
 	}
 }
-const handle_send_email = async (email,gameCommentPublic,siteURL,nonce) => {
-	console.log("handle_send_email: " + email + " comment: " + gameCommentPublic);
+const handle_send_email = async (designerEmail, userEmail, inputPublic, inputPrivate, rating, gameName, gameSlug, gameScore, siteURL, nonce) => {
 	const myHeaders = new Headers();
 	myHeaders.append("Content-Type", "application/json");
 	myHeaders.append("Access-Control-Allow-Headers", "Authorization, X-WP-Nonce, Content-Disposition, Content-MD5, Content-Type");
@@ -241,9 +240,14 @@ const handle_send_email = async (email,gameCommentPublic,siteURL,nonce) => {
 	myHeaders.append( "Vary", "Origin" );
 	myHeaders.append('X-WP-Nonce', nonce);
 	const raw = JSON.stringify({
-		"to": email,
-		"subject": "game comment",
-		"message": gameCommentPublic
+		"designerEmail": designerEmail,
+		"userEmail": userEmail,
+		"inputPublic": inputPublic,
+		"inputPrivate": inputPrivate,
+		"rating": rating,
+		"gameName": gameName,
+		"gameSlug": gameSlug,
+		"gameScore": gameScore
 	});
 	const requestOptions = {
 		method: "POST",
@@ -253,6 +257,7 @@ const handle_send_email = async (email,gameCommentPublic,siteURL,nonce) => {
 	};
 	const emailURL = siteURL + "/wp-json/escapeout/v1/game-score-email/";
 	console.log("emailURL: " + emailURL);
+	console.log("raw: handle-send-email: " + raw);
 	try {
 		const response = await fetch(emailURL, requestOptions)
 		if (!response.ok) {
@@ -262,7 +267,7 @@ const handle_send_email = async (email,gameCommentPublic,siteURL,nonce) => {
 		console.error('Error (post handle-send-email):', error.message)
 	}
 }
-const saveGameComments = async (gameScoreID, inputPublic, inputPrivate, rating, nonce, designerEmail ) => {
+const saveGameComments = async (gameScoreID, inputPublic, inputPrivate, rating, nonce, designerEmail, userEmail, gameName, gameSlug, gameScore ) => {
 	console.log("saveGameComments: " + gameScoreID);
 	const myHeaders = new Headers();
 	myHeaders.append("Content-Type", "application/json");
@@ -296,11 +301,13 @@ const saveGameComments = async (gameScoreID, inputPublic, inputPrivate, rating, 
 			}
 			state.showGameScore = false;
 			/* send email to ...*/
+			//const message = ("user email: " + userEmail + " | public comment: " + inputPublic.toString() + " | private comment: " + inputPrivate.toString() + " | rating: " + rating.toString() + " | game name: " + gameName + " | game slug: " + gameSlug).toString();
+			//console.log("message: " + message);
 
-			handle_send_email(designerEmail,inputPublic,state.siteURL,nonce)
+			handle_send_email(designerEmail, userEmail, inputPublic, inputPrivate, rating, gameName, gameSlug, gameScore, state.siteURL, nonce)
 			/* reset all states */
-			//window.location.reload();
-			//window.scrollTo(0, 0);
+			window.location.reload();
+			window.scrollTo(0, 0);
 
 		} catch (error) {
 			console.error('Error (save game comments):', error.message)
@@ -642,7 +649,7 @@ const { state } = store( 'escapeout-game', {
 			const context = getContext();
 			const inputPublic = document.getElementById("gameCommentPublic").value;
 			const inputPrivate = document.getElementById("gameCommentPrivate").value;
-			saveGameComments(state.gameScoreID, inputPublic, inputPrivate, state.rating, state.nonce, context.designerEmail);
+			saveGameComments(state.gameScoreID, inputPublic, inputPrivate, state.rating, state.nonce, context.designerEmail, context.userEmail, context.gameName, context.gameSlug, state.gameScore);
 		},
 		guessAttempt: () => {
 			const context = getContext();
