@@ -1,0 +1,113 @@
+/**
+ * The following styles get applied inside the editor only.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+.wp-block-create-block-game-block input[type="text"] {
+
+}
+
+.block-editor-block-list__layout.is-root-container > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+	max-width: 900px !important;
+}
+.game-block-edit-block {
+	padding: 20px;
+	border-radius: 2px;
+	border: 1px solid #d6d6d6;
+	color: black;
+	background-color: #f1f1f1;
+	.components-radio-control .components-flex {
+		flex-direction: row;
+		justify-content: flex-start;
+		margin-bottom: 10px;
+	}
+	.components-flex {
+		flex-wrap: wrap;
+		align-items: flex-start;
+	}
+	.mediaColumn {
+		display: flex;
+		flex-direction: column;
+	}
+	.text-area-container {
+		padding:10px;
+	}
+	.button {
+		border: 1px outset buttonborder;
+		border-radius: 3px;
+		background-color: inherit !important;
+		text-decoration: none;
+		text-align: center;
+		padding: .2em;
+		margin: .2em;
+		font-size: .7em;
+		line-height: .6em;
+		height:auto !important;
+		display:block;
+	}
+	.flexBlock200 {
+		display: block;
+		max-height: 100%;
+		max-width: 100%;
+		min-height: 0px;
+		min-width: 0px;
+		flex: 0 1 600px;
+	}
+	.flex-button {
+		display:flex;
+		flex-wrap: wrap;
+		gap: .2rem ;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: stretch;
+		margin:0;
+	}
+	.flex-button-area {
+		border:1px solid black;
+		padding: 20px;
+	}
+	.mark-as-correct {
+		color: #ffd700;
+		position: relative;
+		top: -3px;
+		transition: transform 0.3s ease-out;
+
+		&:hover {
+			transform: scale(1.25) rotate(12deg);
+		}
+	}
+
+	.attention-delete {
+		color: #ff0000;
+		position: relative;
+		top: -5px;
+
+		&:hover {
+			color: #c20000!important;
+		}
+	}
+	.item-holder-edit {
+		border:1px solid black;
+		padding: 0 10px 10px 10px;
+		margin:2px;
+	}
+	.item-title-edit {
+		font-size: 15px;
+		font-weight: bold;
+		margin: 10px 0 8px 0;
+	}
+	.image-holder {
+		text-align: center;
+	}
+	.like-label {
+		font-size: 11px;
+		font-weight: 500;
+		line-height: 1.4;
+		text-transform: uppercase;
+		display: block;
+		margin-bottom: calc(8px);
+		margin-top: calc(8px);
+		padding: 0px;
+	}
+}
