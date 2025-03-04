@@ -221,6 +221,12 @@ $current_user_id = get_current_user_id();
 $current_user = wp_get_current_user();
 $user_email = $current_user->user_email;
 $user_displayName = $current_user->display_name;
+if ($attributes['userMustBeLoggedIn'] === "yes") {
+    /** @var TYPE_NAME $userMustBeLoggedIn */
+    $userMustBeLoggedIn = true;
+} else {
+    $userMustBeLoggedIn = false;
+}
 if ($user_displayName != "") {
     $displayName = $user_displayName;
 } else {
@@ -232,16 +238,12 @@ $designer_name = get_the_author_meta('display_name', get_the_author_meta( 'ID' )
 $gamePost_id = get_the_ID();
 $upload_dir   = wp_upload_dir();
 $key_1_value = get_post_meta( get_the_ID(), '_wporg_meta_key', true );
-if ($attributes['userMustBeLoggedIn'] === "yes") {
-	/** @var TYPE_NAME $userMustBeLoggedIn */
-	$userMustBeLoggedIn = true;
-} else {
-    $userMustBeLoggedIn = false;
-}
+
 if ($user_email) {
     $userIsLoggedIn = true;
 } else {
 	$userIsLoggedIn = false;
+    $displayName = "Not Logged In";
 }
 $assetDir = "/wp-content/plugins/escapeout-game/assets/";
 $firstZoneID = $playZones[0]['id'];
@@ -285,7 +287,7 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
 
         </div>
         <button class="button"
-                data-wp-bind--hidden="!context.userIsLoggedIn"
+                data-wp-bind--hidden="!callbacks.userLoggedInAndMustBeLoggedIn"
                 data-wp-on-async--click="actions.toggleStats"
                 aria-controls="<?php echo esc_attr( $unique_id ); ?>"
                 style="background-color:<?php echo $attributes['textColor'];?>; color:<?php echo $attributes['bgColor']?>"
@@ -293,6 +295,7 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
 			<?php esc_html_e( 'My Stats (this Game)', 'escapeout-game' ); ?>
         </button>
         <button class="button"
+                data-wp-bind--hidden="!context.userMustBeLoggedIn"
                 data-wp-on-async--click="actions.toggleLeaderBoard"
                 aria-controls="<?php echo esc_attr( $unique_id ); ?>"
                 style="background-color:<?php echo $attributes['textColor'];?>; color:<?php echo $attributes['bgColor']?>"
@@ -348,14 +351,13 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
         </div>
         <div data-wp-bind--hidden="context.userMustBeLoggedIn">
             <div class="game-text"><strong>User does not have to be logged in to play this game,
-                    and the only record of your score for this game will be on the screen after you WIN.
+                    and the only record of your score for this game will be on the game score screen after you WIN.
                     To WIN you must successfully solve all the puzzles.</strong><hr />
             </div>
             <div class="game-text">Before Starting the Game you must Sign the Waiver
                 <img data-wp-on--click="actions.toggleWaiverHelp" class="question" data-wp-class--icon-black="!state.isDark" data-wp-class--icon-white="state.isDark" src="<?php echo $siteUrl . $assetDir . "question.svg" ?>" alt="question about zones"/>
             </div>
             <ul>
-
                 <li>
                     <div>Waiver:
                         <span class="red-alert" data-wp-bind--hidden="context.waiverSigned">waiver needs to be signed</span>
@@ -368,14 +370,7 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
                     >
                         <?php esc_html_e( 'Show Waiver', 'escapeout-game' ); ?>
                     </button>
-                    <button class="button"
-                            data-wp-bind--hidden="state.showWaiver"
-                            data-wp-on-async--click="actions.signWaiver"
-                            aria-controls="<?php echo esc_attr( $unique_id ); ?>"
-                            style="background-color:<?php echo $attributes['textColor'];?>; color:<?php echo $attributes['bgColor']?>"
-                    >
-                        <?php esc_html_e( 'Sign Waiver', 'escapeout-game' ); ?>
-                    </button>
+
                     <div class="waiver-container" data-wp-bind--hidden="!state.showWaiver">
                         <div class="waiver-top"><?php echo $attributes["waiverTop"] ?></div>
                         <div class="waiver-body"><?php echo $attributes["waiverBody"] ?></div>
@@ -387,18 +382,36 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
                             <?php esc_html_e( 'Sign Waiver', 'escapeout-game' ); ?>
                         </button>
                         <button class="button"
-                                data-wp-bind--hidden="!context.waiverSigned"
                                 data-wp-on-async--click="actions.showWaiverToggle"
                                 aria-controls="<?php echo esc_attr( $unique_id ); ?>"
                         >
                             <?php esc_html_e( 'Close Waiver', 'escapeout-game' ); ?>
+                        </button>
+                        <button class="button"
+                                data-wp-bind--hidden="state.showWaiver"
+                                data-wp-on-async--click="actions.signWaiver"
+                                aria-controls="<?php echo esc_attr( $unique_id ); ?>"
+                                style="background-color:<?php echo $attributes['textColor'];?>; color:<?php echo $attributes['bgColor']?>"
+                        >
+                            <?php esc_html_e( 'Sign Waiver', 'escapeout-game' ); ?>
                         </button>
                     </div>
                 </li>
 
             </ul>
             <div class="red-alert" data-wp-text="state.errorMessage"></div>
-            <div class="mission" data-wp-text="context.mission"></div>
+            <div style="text-align:center; font-weight:bold; font-size: 1.2em;">Mission: <span class="mission" data-wp-text="context.mission"></span></div>
+            <div style="text-align:center;">
+                <button class="button"
+                        data-wp-bind--aria-expanded="context.isOpen"
+                        data-wp-on-async--click="actions.gameStart"
+                        aria-controls="<?php echo esc_attr( $unique_id ); ?>"
+                        style="background-color:<?php echo $attributes['textColor'];?>; color:<?php echo $attributes['bgColor']?>"
+                >
+                    <?php esc_html_e( 'Start Game - Time Starts', 'escapeout-game' ); ?>
+                </button>
+
+            </div>
             <div class="alert-container2" data-wp-bind--hidden="!state.alertStartVisible">
                 <div class='alert-inner'>You are currently playing another game:<br/>
                     <div class="italics" data-wp-text="state.anotherGame"></div>
@@ -419,17 +432,7 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
                     </button>
                 </div>
             </div>
-            <div>
-                <button class="button"
-                        data-wp-bind--aria-expanded="context.isOpen"
-                        data-wp-on-async--click="actions.gameStart"
-                        aria-controls="<?php echo esc_attr( $unique_id ); ?>"
-                        style="background-color:<?php echo $attributes['textColor'];?>; color:<?php echo $attributes['bgColor']?>"
-                >
-			        <?php esc_html_e( 'Start Game - Time Starts', 'escapeout-game' ); ?>
-                </button>
 
-            </div>
         </div>
         <!-- end user does NOT have to be logged in -->
 

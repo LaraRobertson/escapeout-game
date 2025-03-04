@@ -20,7 +20,7 @@ const matcher = new RegExpMatcher({
 });
 
 /* only show console messages on localhost */
-/*if (window.location.hostname !== 'escapeout-wp') {
+if (window.location.hostname !== 'escapeout-wp') {
 	console.log = (function () {
 		var console_log = console.log;
 		var timeStart = new Date().getTime();
@@ -35,7 +35,7 @@ const matcher = new RegExpMatcher({
 			//console_log.apply(console, args);
 		};
 	})();
-}*/
+}
 /* Basic + space + base64 encode application username:password for user who created? */
 const getPublicDataNOTWORKING = async ({postID,nonce}) => {
 	/* note - can only update fields that you created, probably because of authorization... */
@@ -891,6 +891,14 @@ const { state } = store( 'escapeout-game', {
 		},
 	},
 	callbacks: {
+		userLoggedInAndMustBeLoggedIn: () => {
+			const context = getContext();
+			if (context.userMustBeLoggedIn && context.userIsLoggedIn) {
+				return true;
+			} else {
+				return false;
+			}
+		},
 		puzzleOpen: () => {
 			const context = getContext();
 			if (state.puzzleOpen === context.puzzleID) {
