@@ -20,7 +20,7 @@ const matcher = new RegExpMatcher({
 });
 
 /* only show console messages on localhost */
-if (window.location.hostname !== 'escapeout-wp') {
+if (window.location.hostname === 'escapeout.games') {
 	console.log = (function () {
 		var console_log = console.log;
 		var timeStart = new Date().getTime();
@@ -409,9 +409,9 @@ const createScore = async ({postID, userID, gameID, gameName, gameSlug, userEmai
 				"sa": "",
 				"hua": ""
 			}
-			gameDataObject.qa.qa = JSON.stringify(quesArray);
-			gameDataObject.cta.cta = JSON.stringify(clueTextArray);
-			gameDataObject.hta.hta = JSON.stringify(hintTextArray);
+			gameDataObject.qa.qa = quesArray;
+			gameDataObject.cta.cta = clueTextArray;
+			gameDataObject.hta.hta = hintTextArray;
 			console.log("gameDataObject: " + JSON.stringify(gameDataObject));
 			localStorage.setItem('gdo',JSON.stringify(gameDataObject));
 			state.gdo = gameDataObject;
@@ -514,6 +514,7 @@ const { state } = store( 'escapeout-game', {
 				state.hintText = state.hintTextArray[context.hintIndex][context.hintID];
 			} else {
 				state.hintWarningVisible = true;
+				state.alertDisplayOn = context.hintID;
 			}
 
 		},
@@ -523,6 +524,7 @@ const { state } = store( 'escapeout-game', {
 			state.hintWarningVisible = false;
 			state.hintDisplayOn = context.hintID;
 			state.hintText = state.hintTextArray[context.hintIndex][context.hintID];
+			console.log("hintID: " + context.hintID);
 			console.log("open hint: " + state.hintText);
 			/* add to used hint array */
 			state.hintUsedArray.push(context.hintID);
@@ -547,7 +549,10 @@ const { state } = store( 'escapeout-game', {
 		setClueDisplayToggle: () => {
 			const context = getContext();
 			console.log("state.clueTextArray[0]['clue0']: " + state.clueTextArray[context.clueIndex][context.clueID]);
+			console.log("state.clueTextArray: " + state.clueTextArray);
+			console.log('state.clueTextArray: ' + typeof(state.clueTextArray));
 			state.clueText = state.clueTextArray[context.clueIndex][context.clueID];
+
 			//context.clueDisplayOn = ! context.clueDisplayOn;
 			/* just show one at a time to hide clue text */
 			state.clueDisplayOn = context.clueID;
@@ -594,6 +599,9 @@ const { state } = store( 'escapeout-game', {
 			state.clueHelpVisible = false;
 			state.hintHelpVisible = false;
 			state.helpVisible = false;
+		},
+		hideLocationWarning: () => {
+			state.showLocationWarning = false;
 		},
 		toggleTeamHelp: () => {
 			state.teamHelpVisible = ! state.teamHelpVisible;
@@ -735,6 +743,7 @@ const { state } = store( 'escapeout-game', {
 		signWaiver() {
 			const context = getContext();
 			context.waiverSigned=true;
+			state.errorMessage = '';
 		},
 		gameStart() {
 			const context = getContext();
@@ -745,6 +754,11 @@ const { state } = store( 'escapeout-game', {
 			} else {*/
 				context.teamName = document.getElementById("team-name2").value;
 			/*}*/
+			if (state.showLocationWarning === false) {
+				console.log("showLocationWarning: false")
+			} else {
+				console.log("showLocationWarning: true")
+			}
 			console.log("context.teamName: " + context.teamName);
 			console.log("context.gameName: " + context.gameName);
 			console.log("context.gameID: " + context.gameID);
@@ -777,52 +791,68 @@ const { state } = store( 'escapeout-game', {
 							context.teamName = "";
 						} else {
 							state.errorMessage = "";
-							/* need teamName in localstorage? */
-							//localStorage.setItem("teamName", context.teamName);
-							/* this is timeStart */
-							const date = new Date().getTime();
-							/* ... */
-							/* check for other games? */
-							state.timeStart = date;
-							state.formattedDate = format(date, "MM/dd/yy h:mma");
-							/* do this after score is created */
-							/*localStorage.setItem("timeStart", date);*/
-							/* context.gameStart = true;*/
-							state.gameScore = '';
-							state.showGameScore = false;
-							state.showWaiver = false;
-							let testing = "";
-							if (context.testKey === "eo-test-game") {
-								testing = "testing";
+
+							if (state.showLocationWarning === false) {
+								console.log("show warning");
+								state.showLocationWarning=true;
+								if (state.showLocationWarning === false) {
+									console.log("showLocationWarning: false")
+								} else {
+									console.log("showLocationWarning: true")
+								}
 							} else {
-								testing = "live";
-							}
-							if (context.userMustBeLoggedIn) {
-								createScore({
-									postID: context.postID,
-									userID: context.userID,
-									gameID: context.gameID,
-									gameName: context.gameName,
-									gameSlug: context.gameSlug,
-									userEmail: context.userEmail,
-									designerEmail: context.designerEmail,
-									designerName: context.designerName,
-									timeStart: date,
-									formattedDate: format(date, "MM/dd/yy h:mma"),
-									teamName: context.teamName,
-									firstTime: context.firstTime,
-									testing: testing,
-									nonce: state.nonce
-								});
-							} else {
-								getPublicData({
-									postID: context.postID, nonce: state.nonce
-								});
-								localStorage.setItem("gameName",context.gameName);
-								localStorage.setItem("timeStart", date);
-								localStorage.setItem("gameID", context.gameID);
-								localStorage.setItem("gameSlug", context.gameSlug);
-								context.gameStart = true;
+
+
+								/* need teamName in localstorage? */
+								//localStorage.setItem("teamName", context.teamName);
+								/* this is timeStart */
+								const date = new Date().getTime();
+								/* ... */
+								/* check for other games? */
+								state.timeStart = date;
+								state.formattedDate = format(date, "MM/dd/yy h:mma");
+								/* do this after score is created */
+								/*localStorage.setItem("timeStart", date);*/
+								/* context.gameStart = true;*/
+								state.gameScore = '';
+								state.showGameScore = false;
+								state.showWaiver = false;
+								let testing = "";
+								if (context.testKey === "eo-test-game") {
+									testing = "testing";
+								} else {
+									testing = "live";
+								}
+
+
+
+								if (context.userMustBeLoggedIn) {
+									createScore({
+										postID: context.postID,
+										userID: context.userID,
+										gameID: context.gameID,
+										gameName: context.gameName,
+										gameSlug: context.gameSlug,
+										userEmail: context.userEmail,
+										designerEmail: context.designerEmail,
+										designerName: context.designerName,
+										timeStart: date,
+										formattedDate: format(date, "MM/dd/yy h:mma"),
+										teamName: context.teamName,
+										firstTime: context.firstTime,
+										testing: testing,
+										nonce: state.nonce
+									});
+								} else {
+									getPublicData({
+										postID: context.postID, nonce: state.nonce
+									});
+									localStorage.setItem("gameName",context.gameName);
+									localStorage.setItem("timeStart", date);
+									localStorage.setItem("gameID", context.gameID);
+									localStorage.setItem("gameSlug", context.gameSlug);
+									context.gameStart = true;
+								}
 							}
 							/* get gameScoreID */
 						}
@@ -891,6 +921,12 @@ const { state } = store( 'escapeout-game', {
 		},
 	},
 	callbacks: {
+		hintWarningVisible: () => {
+			const context = getContext();
+			if ((context.hintID === state.alertDisplayOn) && (state.hintWarningVisible === true) ){
+				return true;
+			}
+		},
 		userLoggedInAndMustBeLoggedIn: () => {
 			const context = getContext();
 			if (context.userMustBeLoggedIn && context.userIsLoggedIn) {
@@ -1018,17 +1054,21 @@ const { state } = store( 'escapeout-game', {
 						state.gdo = JSON.parse(localStorage.getItem("gdo"));
 						if (state.gdo.hasOwnProperty("cta")) {
 							if (state.gdo.cta.hasOwnProperty("cta")) {
-								state.clueTextArray = JSON.parse(state.gdo.cta.cta);
+								//state.clueTextArray = JSON.parse(state.gdo.cta.cta);
+								state.clueTextArray = state.gdo.cta.cta;
+								//??JSON.parse(JSON.stringify(response));
 							}
 						}
 						if (state.gdo.hasOwnProperty("qa")) {
 							if (state.gdo.qa.hasOwnProperty("qa")) {
-								state.puzzleQuestionArray = JSON.parse(state.gdo.qa.qa);
+								//state.puzzleQuestionArray = JSON.parse(state.gdo.qa.qa);
+								state.puzzleQuestionArray = state.gdo.qa.qa;
 							}
 						}
 						if (state.gdo.hasOwnProperty("hta")) {
 							if (state.gdo.hta.hasOwnProperty("hta")) {
-								state.hintTextArray = JSON.parse(state.gdo.hta.hta);
+								//state.hintTextArray = JSON.parse(state.gdo.hta.hta);
+								state.hintTextArray = state.gdo.hta.hta;
 							}
 						}
 						if (JSON.parse(localStorage.getItem("gdo")).sa !== "")

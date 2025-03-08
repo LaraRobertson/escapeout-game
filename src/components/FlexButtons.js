@@ -152,7 +152,7 @@ export default function FlexButtons({attributes,setAttributes}) {
             <div className={showMap1 ? "show flex-button-area" : "hide"}>
                 <header class="modal_header"><strong>Public Map</strong></header>
                 <div className="small">SRC ONLY: Get Map src for iframe using "create map" at
-                    https://mymaps.google.com and look for an "Embed" link for iframe code, also suggest using base map as "simple atlas".
+                    https://mymaps.google.com, after creating map hit preview and look for a Share, then an "Embed on my site" link for iframe src code, also suggest using base map as "simple atlas".
                 </div>
                 <div className="text-area-container">
                     <TextControl label="Public Map Src for iframe (if no src code, no map):" value={attributes.map1}

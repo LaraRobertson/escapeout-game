@@ -108,6 +108,10 @@ export default function Edit( { attributes, setAttributes } ) {
 		console.log("update mission");
 		setAttributes({ mission: value })
 	}
+	function updateGameIntro(value) {
+		console.log("update gameIntro");
+		setAttributes({ gameIntro: value })
+	}
 	function updateWalkingDistance(value) {
 		console.log("update walking distance");
 		setAttributes({ walkingDistance: value })
@@ -249,6 +253,8 @@ export default function Edit( { attributes, setAttributes } ) {
 							 style={{fontSize: "20px"}}/>
 				<TextControl label="Mission:" value={attributes.mission} onChange={updateMission}
 							 style={{fontSize: "20px"}}/>
+				<TextControl label="Game Intro:" value={attributes.gameIntro} onChange={updateGameIntro}
+							 style={{fontSize: "20px"}}/>
 				<div className="like-label">Game Description (please provide an excerpt too):</div>
 				<div style={{backgroundColor: "white", padding: "10px", marginBottom: "10px"}}>
 					<InnerBlocks
@@ -259,23 +265,23 @@ export default function Edit( { attributes, setAttributes } ) {
 
 				</BlockControls>
 				<InspectorControls>
-					<PanelBody title="Background Color" initialOpen={true}>
+					<PanelBody title="Background Color (orig: #EBEBEB)" initialOpen={true}>
 						<PanelRow>
 							<ColorPicker
 								color={attributes.bgColor}
 								onChange={x => setAttributes({bgColor: x})}
 								enableAlpha
-								defaultValue="#000"
+								defaultValue="#EBEBEB"
 							/>
 						</PanelRow>
 					</PanelBody>
-					<PanelBody title="Text Color" initialOpen={true}>
+					<PanelBody title="Text Color (orig: #000000)" initialOpen={true}>
 						<PanelRow>
 							<ColorPicker
 								color={attributes.textColor}
 								onChange={x => setAttributes({textColor: x})}
 								enableAlpha
-								defaultValue="#000"
+								defaultValue="#000000"
 							/>
 						</PanelRow>
 					</PanelBody>
