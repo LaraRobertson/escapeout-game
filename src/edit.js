@@ -58,7 +58,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		"lat": "",
 		"long": "",
 		"imageID": "",
-		"order": "",
+		"order": "1",
 		"disabled": "No",
 	}
 	const puzzleObject = {
@@ -69,7 +69,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		"answer":[""],
 		"iconName": "",
 		"iconPath": "",
-		"order": "",
+		"order": "1",
 		"disabled": "No",
 	}
 	const clueObject = {
@@ -78,7 +78,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		"iconName": "",
 		"iconPath": "",
 		"imageID": "",
-		"order": "",
+		"order": "1",
 		"disabled": "No",
 	}
 	const hintObject = {
@@ -253,7 +253,7 @@ export default function Edit( { attributes, setAttributes } ) {
 							 style={{fontSize: "20px"}}/>
 				<TextControl label="Mission:" value={attributes.mission} onChange={updateMission}
 							 style={{fontSize: "20px"}}/>
-				<TextControl label="Game Intro:" value={attributes.gameIntro} onChange={updateGameIntro}
+				<TextareaControl label="Game Intro:" value={attributes.gameIntro} onChange={updateGameIntro}
 							 style={{fontSize: "20px"}}/>
 				<div className="like-label">Game Description (please provide an excerpt too):</div>
 				<div style={{backgroundColor: "white", padding: "10px", marginBottom: "10px"}}>

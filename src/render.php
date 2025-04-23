@@ -182,11 +182,11 @@ wp_interactivity_state(
         'puzzleQuestionArray' => [],
         'quitVisible' => false,
         'alertDisplayOn'=> '',
-        'helpVisible' => false,
-        'zoneHelpVisible'=> false,
-        'puzzleHelpVisible'=> false,
-        'clueHelpVisible'=> false,
-        'hintHelpVisible'=> false,
+        'helpVisible' => true,
+        'zoneHelpVisible'=> true,
+        'puzzleHelpVisible'=> true,
+        'clueHelpVisible'=> true,
+        'hintHelpVisible'=> true,
         'teamHelpVisible'=> false,
         'waiverHelpVisible'=> false,
         'modalPublicMapOpen'=> false,
@@ -267,6 +267,7 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
 <div
     class="game-block-frontend"
     style="background-color:<?php echo $attributes['bgColor']?>;color: <?php echo $attributes['textColor']; color:?>"
+    data-wp-class--changezindex="context.gameStart"
 	<?php echo get_block_wrapper_attributes(); ?>
 	data-wp-interactive="escapeout-game"
 	<?php echo wp_interactivity_data_wp_context( $frontendContext); ?>
@@ -344,7 +345,7 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
                             aria-controls="<?php echo esc_attr( $unique_id );?>"
                             style="background-color:<?php echo $attributes['textColor'];?>; color:<?php echo $attributes['bgColor']?>"
                     >
-                        <?php esc_html_e( 'Public Map', 'escapeout-game' ); ?>
+                        <?php esc_html_e( 'Zone Map', 'escapeout-game' ); ?>
                     </button>
                     <button class="button"
                             data-wp-on-async--click="actions.togglePublicImage"
@@ -445,6 +446,8 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
 
                         <div class="red-alert" style="text-align:center; margin-top:10px;"><strong>Are you ready?</strong></div>
                         <div class="red-alert" style="text-align:center; margin:10px 0;"><strong>Are you near the Center of Zone 1?</strong></div>
+                        <div style="text-align: center"><?php echo wp_get_attachment_image( $attributes['playZones'][0]["imageID"], "thumbnail", "", array( "class" => "img-responsive" ) );  ?></div>
+
                         <button class="button"
                                 data-wp-bind--aria-expanded="context.isOpen"
                                 data-wp-on-async--click="actions.gameStart"
@@ -615,6 +618,8 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
 
                                 <div class="red-alert" style="text-align:center; margin-top:10px;"><strong>Are you ready?</strong></div>
                                 <div class="red-alert" style="text-align:center; margin:10px 0;"><strong>Are you near the Center of Zone 1?</strong></div>
+                                <div style="text-align: center"><?php echo wp_get_attachment_image( $attributes['playZones'][0]["imageID"], "thumbnail", "", array( "class" => "img-responsive" ) );  ?></div>
+
                                 <button class="button"
                                         data-wp-bind--aria-expanded="context.isOpen"
                                         data-wp-on-async--click="actions.gameStart"
@@ -668,21 +673,7 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
         <!-- end user should be logged in -->
 
 
-        <div>
-            <div class="modalContainerMap" data-wp-class--showmodal="state.modalPublicMapOpen" data-wp-on--click="actions.togglePublicMap">
-                <div class="modal from-right">
-                    <header class="modal_header">
-                        <div><strong>Public Map</strong></div>
-                    </header>
-                    <main id="publicMapContainer" class="modal_contentr">
 
-                    </main>
-                    <footer class="modal_footer">
-                        <button class="modal-close">Close</button>
-                    </footer>
-                </div>
-            </div>
-        </div>
         <div>
             <div class="modalContainerMap" data-wp-class--showmodal="state.modalPublicImageOpen" data-wp-on--click="actions.togglePublicImage">
                 <div class="modal from-right">
@@ -848,16 +839,17 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
                     <!-- check if gameMap (context true/false -> added a game map block and created an anchor) -->
                     <!-- <a href="#gameMap" class="button">Zone Map</a>-->
                     <button class="button"
-                            data-wp-bind--hidden="callbacks.checkPrivateMap"
-                            data-wp-on-async--click="actions.togglePrivateMap"
-                            aria-controls="<?php echo esc_attr( $unique_id ); ?>"
-                    >
-		                <?php esc_html_e( 'Zone Map', 'escapeout-game' ); ?>
+                            data-wp-bind--hidden="callbacks.checkPublicMap"
+                            data-wp-on-async--click="actions.togglePublicMap"
+                            aria-controls="<?php echo esc_attr( $unique_id );?>"
+                     >
+                        <?php esc_html_e( 'Zone Map', 'escapeout-game' ); ?>
                     </button>
                     <button class="button"
                             data-wp-on--click="actions.toggleTheme"
-                            data-wp-text="state.themeText"
-                                               ></button>
+                            data-wp-text="state.themeText">
+
+                    </button>
                     <button class="button"
                             data-wp-on--click="actions.quitAlertOpen"
                             aria-controls="<?php echo esc_attr( $unique_id ); ?>"
@@ -1070,6 +1062,21 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
                     <div><strong>Zone Map</strong> <span class="small">(click on right arrow or icons for zone name(s))</span> </div>
                 </header>
                 <main id="privateMapContainer" class="modal_content">
+
+                </main>
+                <footer class="modal_footer">
+                    <button class="modal-close">Close</button>
+                </footer>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="modalContainerMap" data-wp-class--showmodal="state.modalPublicMapOpen" data-wp-on--click="actions.togglePublicMap">
+            <div class="modal from-right">
+                <header class="modal_header">
+                    <div><strong>Public Map</strong></div>
+                </header>
+                <main id="publicMapContainer" class="modal_contentr">
 
                 </main>
                 <footer class="modal_footer">

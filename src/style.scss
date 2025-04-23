@@ -36,6 +36,11 @@
 .game-block-frontend .game-container {
 	padding: 20px 10px 40px 10px;
 }
+.game-block-frontend.changezindex {
+	/* the z-index of nav is 10 */
+	/* don't want nav to show over game screen */
+	z-index: 11;
+}
 .game-block-frontend {
 	background-color: #EBEBEB;
 	overflow: hidden;
@@ -47,7 +52,8 @@
 	border-radius: 4px;
 	margin-bottom: 35px;
 	/* the z-index of nav is 10 */
-	z-index:20;
+	/* want nav to show over intro screen */
+	z-index:9;
 
 
 	&.dark-theme {
@@ -527,11 +533,15 @@
 .modalContainerPuzzle {
 	height: 300px !important;
 	background-color: transparent;
+
+	z-index: 1;
 }
 .modalContainerMap {
 	background: rgba(0, 0, 0, 0.6);
 	right:0;
 	bottom:0;
+
+	z-index: 12;
 }
 .modalContainerMap .modal {
 	overflow-y: scroll;
@@ -554,8 +564,6 @@
 	transition: all .2s ease;
 	visibility: hidden;
 	width: 100%;
-
-	z-index: 1;
 
 	.modal {
 		background-color: rgba(255, 255, 255, 1);
@@ -661,7 +669,7 @@
 	transition: all .2s ease;
 	visibility: hidden;
 	width: 100%;
-	z-index:1;
+	z-index:10;
 	background-color: rgba(0, 0, 0, .9);
 
 	.modal {

@@ -150,51 +150,62 @@ export default function FlexButtons({attributes,setAttributes}) {
                 </div>
             </div>
             <div className={showMap1 ? "show flex-button-area" : "hide"}>
-                <header class="modal_header"><strong>Public Map</strong></header>
+                <header class="modal_header"><strong>Zone Map</strong></header>
                 <div className="small">SRC ONLY: Get Map src for iframe using "create map" at
                     https://mymaps.google.com, after creating map hit preview and look for a Share, then an "Embed on my site" link for iframe src code, also suggest using base map as "simple atlas".
                 </div>
                 <div className="text-area-container">
-                    <TextControl label="Public Map Src for iframe (if no src code, no map):" value={attributes.map1}
+                    <TextControl label="Zonw Map Src for iframe (if no src code, no map):" value={attributes.map1}
                                  onChange={updateMap1}
                                  style={{fontSize: "15px"}}/>
                     <TextControl
-                        label="Zone / Public Map Explanation (description of what is on public map):"
                         value={attributes.publicMapText} onChange={updatePublicMapText}
-                        style={{fontSize: "20px"}}/>
+                        style={{display:"none", fontSize: "20px"}}/>
 
 
                 </div>
-                <header class="modal_header"><strong>Private/Zone Map</strong></header>
+                <div style={{display:"none"}}>
+                    <header class="modal_header"><strong>Private/Zone Map</strong></header>
 
-                <div className="text-area-container">
-                    <TextControl label="Private/Zone Map Src for iframe (if no src code, no map):"
-                                 value={attributes.map2}
-                                 onChange={updateMap2}
-                                 style={{fontSize: "15px"}}/>
-                    <div className={"flex-button"}>
-                        <Button
-                            isPrimary
-                            className={(attributes.map2 === "") ? "hide" : "show"}
-                            onClick={() => {
-                                setShowMap2View(!showMap2View);
-                            }}
-                        >
-                            <div className={showMap2View ? "hide" : "show"}>View Private/Zone Map</div>
-                            <div className={showMap2View ? "show" : "hide"}>Close Private/Zone Map</div>
-                        </Button>
-                        <Button
-                            isPrimary
-                            className={(attributes.map1 === "") ? "hide" : "show"}
-                            onClick={() => {
-                                setShowMap1View(!showMap1View);
-                            }}
-                        >
-                            <div className={showMap1View ? "hide" : "show"}>View Public Map</div>
-                            <div className={showMap1View ? "show" : "hide"}>Close Public Map</div>
-                        </Button>
+                    <div className="text-area-container">
+                        <TextControl label="Private/Zone Map Src for iframe (if no src code, no map):"
+                                     value={attributes.map2}
+                                     onChange={updateMap2}
+                                     style={{fontSize: "15px"}}/>
+                        <div className={"flex-button"}>
+                            <Button
+                                isPrimary
+                                className={(attributes.map2 === "") ? "hide" : "show"}
+                                onClick={() => {
+                                    setShowMap2View(!showMap2View);
+                                }}
+                            >
+                                <div className={showMap2View ? "hide" : "show"}>View Private/Zone Map</div>
+                                <div className={showMap2View ? "show" : "hide"}>Close Private/Zone Map</div>
+                            </Button>
+                            <Button
+                                isPrimary
+                                className={(attributes.map1 === "") ? "hide" : "show"}
+                                onClick={() => {
+                                    setShowMap1View(!showMap1View);
+                                }}
+                            >
+                                <div className={showMap1View ? "hide" : "show"}>View Public Map</div>
+                                <div style={{display:"none"}} className={showMap1View ? "show" : "hide"}>Close Public Map</div>
+                            </Button>
+                        </div>
                     </div>
                 </div>
+                <Button
+                    isPrimary
+                    className={(attributes.map1 === "") ? "hide" : "show"}
+                    onClick={() => {
+                        setShowMap1View(!showMap1View);
+                    }}
+                >
+                    <div className={showMap1View ? "hide" : "show"}>View Zone Map</div>
+                    <div style={{display:"none"}} className={showMap1View ? "show" : "hide"}>Close Zone Map</div>
+                </Button>
             </div>
             <div className={showMap1View ? "showmodal modalContainerMap" : "hide modalContainerMap"}>
                 <div class="modal from-right">

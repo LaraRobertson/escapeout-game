@@ -1,4 +1,4 @@
-import { TextControl,Flex, FlexBlock, FlexItem, Button, RadioControl} from "@wordpress/components";
+import { TextControl, TextareaControl, Flex, FlexBlock, FlexItem, Button, RadioControl} from "@wordpress/components";
 import {editArrayItem, deleteArrayItem} from "./manageArrayItem";
 
 export default function HintEdit({hintArray,index,attributes,setAttributes,playZoneName}) {
@@ -20,7 +20,7 @@ export default function HintEdit({hintArray,index,attributes,setAttributes,playZ
                                         editArrayItem("hint","name", newValue, index, index2, "", attributes, setAttributes)
                                     }}
                                 />
-                                <TextControl
+                                <TextareaControl
                                     label="Hint Text"
                                     autoFocus={hint.text == undefined}
                                     value={hint.text}

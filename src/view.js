@@ -627,6 +627,7 @@ const { state } = store( 'escapeout-game', {
 		},
 
 		togglePublicMap() {
+			console.log("toggle public map");
 			const context = getContext();
 			loadPublicMap(context.map1);
 			/*if (iframePublic.src === "") {
