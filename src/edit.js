@@ -84,7 +84,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	const hintObject = {
 		"name": "",
 		"text": "",
-		"order": "",
+		"order": "1",
 		"disabled": "No",
 	}
 	// When the block loads, set playZones Array if not set or is just using default data
@@ -103,6 +103,10 @@ export default function Edit( { attributes, setAttributes } ) {
 	function updateGameName(value) {
 		console.log("update game name");
 		setAttributes({ gameName: value })
+	}
+	function updateShift(value) {
+		console.log("update shift");
+		setAttributes({ shift: value })
 	}
 	function updateMission(value) {
 		console.log("update mission");
@@ -297,7 +301,8 @@ export default function Edit( { attributes, setAttributes } ) {
 					] }
 					onChange={ ( value ) => updateUserMustBeLoggedIn( value ) }
 				/>
-
+				<TextControl label="Shift:" value={attributes.shift} onChange={updateShift}
+							 style={{fontSize: "20px",display:"none"}}/>
 
 				<div className={"item-holder-edit"}>
 					{attributes.playZones.map(function (playZone, index) {

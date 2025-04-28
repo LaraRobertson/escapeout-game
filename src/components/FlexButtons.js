@@ -1,5 +1,7 @@
 import { TextareaControl, TextControl, Button} from "@wordpress/components";
 import {useState} from "react";
+import {ReactModalFromRight} from "./Modals";
+import GameStats from "./GameStats";
 
 export default function FlexButtons({attributes,setAttributes}) {
     const [showWaiver, setShowWaiver] = useState(false);
@@ -9,6 +11,8 @@ export default function FlexButtons({attributes,setAttributes}) {
     const [showMap2View, setShowMap2View] = useState(false);
     const [showHelpFields, setShowHelpFields] = useState(false);
     const [showWaiverFields, setShowWaiverFields] = useState(false);
+    const [modalContent, setModalContent] = useState({open:false, content:"",id:"",action:"", gameID:"",zoneID:"",updatedDB:false});
+
     function updateZoneText(value) {
         console.log("update zone text");
         setAttributes({ zoneText: value })
@@ -44,6 +48,17 @@ export default function FlexButtons({attributes,setAttributes}) {
     function updateWaiverBody(value) {
         console.log("update waiver body");
         setAttributes({ waiverBody: value })
+    }
+    function handleStats(props) {
+        setModalContent({
+            open: true,
+            content: "Stats",
+            id: "",
+            gameID: attributes.gameID,
+            zoneID:"",
+            action: attributes.gameName,
+            updatedDB:false
+        })
     }
     return (
         <>
@@ -84,6 +99,11 @@ export default function FlexButtons({attributes,setAttributes}) {
                     <div className={showMap1 ? "hide" : "show"}>Show Zones/Map Info</div>
                     <div className={showMap1 ? "show" : "hide"}>Close Zones/Map Info</div>
                 </Button>
+                <Button isPrimary
+                        onClick={() => handleStats({"gameID": attributes.gameID, "gameName": attributes.gameName})}>
+                    Stats
+                </Button>
+
 
             </div>
             <div className={showHelp ? "show" : "hide"}>
@@ -150,12 +170,12 @@ export default function FlexButtons({attributes,setAttributes}) {
                 </div>
             </div>
             <div className={showMap1 ? "show flex-button-area" : "hide"}>
-                <header class="modal_header"><strong>Zone Map</strong></header>
+                <header className="modal_header"><strong>Zone Map</strong></header>
                 <div className="small">SRC ONLY: Get Map src for iframe using "create map" at
                     https://mymaps.google.com, after creating map hit preview and look for a Share, then an "Embed on my site" link for iframe src code, also suggest using base map as "simple atlas".
                 </div>
                 <div className="text-area-container">
-                    <TextControl label="Zonw Map Src for iframe (if no src code, no map):" value={attributes.map1}
+                    <TextControl label="Zone Map Src for iframe (if no src code, no map):" value={attributes.map1}
                                  onChange={updateMap1}
                                  style={{fontSize: "15px"}}/>
                     <TextControl
@@ -209,7 +229,7 @@ export default function FlexButtons({attributes,setAttributes}) {
             </div>
             <div className={showMap1View ? "showmodal modalContainerMap" : "hide modalContainerMap"}>
                 <div class="modal from-right">
-                    <header class="modal_header">
+                    <header className="modal_header">
                         <div><strong>Public Map</strong> <span class={"small"}>(click on right arrow or icons for zone name(s))</span>
                         </div>
                     </header>
@@ -249,6 +269,9 @@ export default function FlexButtons({attributes,setAttributes}) {
                     </footer>
                 </div>
             </div>
+            <ReactModalFromRight modalContent={modalContent} setModalContent={setModalContent} >
+                {(modalContent.content == "Stats") && <GameStats modalContent={modalContent} />}
+            </ReactModalFromRight>
 
         </>
     )

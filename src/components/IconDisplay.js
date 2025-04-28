@@ -1,29 +1,44 @@
+import PropTypes from 'prop-types';
 
-export function IconDisplay({iconPath,type}) {
-    console.log("type: " + type);
-    const siteURL =window.my_data.siteUrl;
-    //console.log("siteURL:" + siteURL);
-    //console.log("window.my_data.siteUrl:" + window.my_data.siteUrl);
-    const imageURL = siteURL + iconPath + ".svg";
-    if (iconPath !== "") {
-        if (type === "puzzle") {
-            const imageURLOpen = siteURL + iconPath + "-open.svg";
-            return (
-                <div>
-                    <img src={imageURL}/>&nbsp;
-                    <img src={imageURLOpen}/>
-                </div>
-            )
-        } else {
-            return (
-                <div>
-                    <img src={imageURL}/>
-                </div>
-            )
-        }
-    } else {
-        return (
-            <div>icon not set</div>
-        )
+export function IconDisplay({ iconPath, type }) {
+    const siteUrl = window?.my_data?.siteUrl;
+
+    if (!iconPath || !siteUrl) {
+        return <div>Icon not set</div>;
     }
+
+    const imageURL = `${siteUrl}${iconPath}.svg`;
+    const imageURLOpen = `${siteUrl}${iconPath}-open.svg`;
+
+    return (
+        <div className="icon-display">
+            <img
+                src={imageURL}
+                alt={type === "puzzle" ? "Puzzle icon (closed)" : "Icon"}
+                className="icon-image"
+            />
+            {type === "puzzle" && (
+                <>
+                    &nbsp;
+                    <img
+                        src={imageURLOpen}
+                        alt="Puzzle icon (open)"
+                        className="icon-image-open"
+                    />
+                </>
+            )}
+        </div>
+    );
 }
+
+// Optional: prop types to catch errors early
+IconDisplay.propTypes = {
+    iconPath: PropTypes.string,
+    type: PropTypes.string,
+};
+
+// Optional: default props
+IconDisplay.defaultProps = {
+    iconPath: '',
+    type: '',
+};

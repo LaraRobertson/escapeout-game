@@ -9,6 +9,10 @@ export function editArrayItem(itemType, field, newValue, index, index2, index3, 
             if (newShift === 0) {
                 newShift = generateRandomNumber(1,100);
                 console.log("set shift: " + newShift);
+                /*  reset shift if 26 because it doesn't do anything */
+                if (newShift === 26) {
+                    newShift = 29;
+                }
                 //setAttributes["shift"] = randID(2);
                 setAttributes({ shift: newShift })
             }

@@ -23,7 +23,8 @@
 		"@wordpress/interactivity": "^6.11.0",
 		"@wordpress/rich-text": "^7.14.0",
 		"date-fns": "^4.1.0",
-		"obscenity": "^0.4.1"
+		"obscenity": "^0.4.1",
+		"react-modal": "^3.16.3"
 	},
 	"devDependencies": {
 		"@wordpress/scripts": "^30.4.0"

@@ -305,14 +305,16 @@ const saveGameComments = async (gameScoreID, inputPublic, inputPrivate, rating, 
 			//console.log("message: " + message);
 
 			handle_send_email(designerEmail, userEmail, inputPublic, inputPrivate, rating, gameName, gameSlug, gameScore, state.siteURL, nonce)
-			/* reset all states */
-			window.location.reload();
-			window.scrollTo(0, 0);
+
 
 		} catch (error) {
 			console.error('Error (save game comments):', error.message)
 		}
 	}
+	/* reset all states */
+	removeLocalStorage();
+    window.location.reload();
+    window.scrollTo(0, 0);
 };
 const getScoreByID = async ({postID, userID, realTimeStart}) => {
 }
@@ -653,6 +655,9 @@ const { state } = store( 'escapeout-game', {
 		},
 		toggleLeaderBoard() {
 			state.modalLeaderBoardOpen = !state.modalLeaderBoardOpen;
+		},
+		toggleComments() {
+			state.modalCommentsOpen = !state.modalCommentsOpen;
 		},
 		saveGameComments: () => {
 			const context = getContext();

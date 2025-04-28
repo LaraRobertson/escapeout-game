@@ -194,6 +194,7 @@ wp_interactivity_state(
         'modalPublicImageOpen'=> false,
         'modalStatsOpen'=> false,
         'modalLeaderBoardOpen'=> false,
+        'modalCommentsOpen'=> false,
         'modalGameMapOpen'=> false,
         'hintUsedArray' => [],
         'solvedArray' => [],
@@ -251,8 +252,10 @@ $firstZoneID = $playZones[0]['id'];
 $gameID = $attributes['gameID'];
 global $wpdb;
 $table_name = $wpdb->prefix . 'game_score';
-$resultLeaderBoard = $wpdb->get_results ( "SELECT * FROM `$table_name` WHERE `firstTime` = 'yes'  AND `gameID` = '$gameID' ORDER BY `totalTime` LIMIT 20" );
+$resultLeaderBoard = $wpdb->get_results ( "SELECT * FROM `$table_name` WHERE `firstTime` = 'yes'  AND `gameID` = '$gameID' AND `completed` = 'yes' ORDER BY `totalTime` LIMIT 20" );
 $resultStats = $wpdb->get_results ( "SELECT * FROM `$table_name` WHERE `userEmail` = '$user_email' AND `gameID` = '$gameID' ORDER BY `timeStart`" );
+$resultComments = $wpdb->get_results ( "SELECT * FROM `$table_name` WHERE `gameID` = '$gameID' AND `gameCommentPublicApproved` = 'yes' ORDER BY `timeStart`" );
+//print_r($resultComments);
 $firstTime="yes";
 if (count($resultStats) > 0) {
     $firstTime='no';
@@ -263,7 +266,6 @@ $frontendContext = array('testKey' => $key_1_value, 'firstTime' => $firstTime, '
 $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'firstZoneID' => $firstZoneID, 'hintArray' => $hintArray, 'clueArray' => $clueArray, 'puzzleArray' => $puzzleArray, 'playZones' => $playZones, 'solved' => false, 'showCongrats' => false, 'showSorry' => false);
 //print_r($post_slug);
 ?>
-
 <div
     class="game-block-frontend"
     style="background-color:<?php echo $attributes['bgColor']?>;color: <?php echo $attributes['textColor']; color:?>"
@@ -318,13 +320,14 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
         >
 			<?php esc_html_e( 'Leaderboard', 'escapeout-game' ); ?>
         </button>
-        <!--<button class="button"
-                data-wp-on-async--click="actions.toggleLeaderBoard"
-                aria-controls="<?php //echo esc_attr( $unique_id ); ?>"
+        <button class="button"
+                data-wp-bind--hidden="!context.userMustBeLoggedIn"
+                data-wp-on-async--click="actions.toggleComments"
+                aria-controls="<?php echo esc_attr( $unique_id ); ?>"
                 style="background-color:<?php echo $attributes['textColor'];?>; color:<?php echo $attributes['bgColor']?>"
         >
-            <?php //esc_html_e( 'Comments', 'escapeout-game' ); ?>
-        </button>-->
+            <?php esc_html_e( 'Comments/Ratings', 'escapeout-game' ); ?>
+        </button>
         <hr/>
         <div style="text-align:center; font-weight:bold; font-size: 1.2em;">Mission: <?php echo $attributes['mission'] ?></div>
 
@@ -544,11 +547,10 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
                         <div class="help-container-start" data-wp-bind--hidden="!state.teamHelpVisible">
                             <div class='help-inner' style="background-color:<?php echo $attributes['textColor'];?>; color:<?php echo $attributes['bgColor']?>">
                                 <div>
-                                    Playing as a team simply means the display name for the Leaderboard will be the team
-                                    name and not the player's display name. To play as a team you can talk to each
-                                    other, pass the phone around, etc.  Someone can log in as the original player
-                                    on another device and play concurrently to help current player. The only score that will
-                                        count for the leaderboard will be the first time the player plays game.
+                                    Using a different display name could indicate you would like to play as a team or do not want to
+                                    use your display name for comments or ratings or scores. To play as a team you can talk to each
+                                    other, pass the phone around, etc. The only score that will
+                                        count for the leaderboard will be the first time a logged in player plays and completes the game.
                                 </div>
 
                                 <button class="button"
@@ -560,7 +562,7 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
 
                             </div>
                         </div>
-                        <div>Do you want to play as a Team?
+                        <div>Do you want to use a display name other than your user name?
                             <img data-wp-on--click="actions.toggleTeamHelp" class="question" data-wp-class--icon-black="!state.isDark" data-wp-class--icon-white="state.isDark" src="<?php echo $siteUrl . $assetDir . "question.svg" ?>" alt="question about zones" />
                         </div>
                         <button class="button"
@@ -720,9 +722,9 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
                             Public Comment:<br />
                             <textarea
                                     class="escapeout-game__textarea text-area"
-                                    id="gameCommentPrivate"
+                                    id="gameCommentPublic"
                                     name="feedback"
-                                    placeholder="<?php esc_html_e( 'Your Public Comment...', 'escapeout-game' ); ?>"
+                                    placeholder="<?php esc_html_e( 'Your Public Comment', 'escapeout-game' ); ?>"
                                     required
                                     rows="4"
                                     spellcheck="false"
@@ -730,7 +732,7 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
                             Private Comment:<br />
                             <textarea
                                     class="escapeout-game__textarea text-area"
-                                    id="gameCommentPublic"
+                                    id="gameCommentPrivate"
                                     name="feedback"
                                     placeholder="<?php esc_html_e( 'Your Private Comment', 'escapeout-game' ); ?>"
                                     required
@@ -815,6 +817,38 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
                                     <div class="flex-row fourths"><?php echo $score->formattedDate ?></div>
                                 </div>
                            <?php $index++; } ?>
+                    </main>
+                    <footer class="modal_footer">
+                        <button class="modal-close">Close</button>
+                    </footer>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="modalContainerMap" data-wp-class--showmodal="state.modalCommentsOpen" data-wp-on--click="actions.toggleComments">
+                <div class="modal from-right">
+                    <header class="modal_header">
+                        <div><strong>Comments/Ratings</strong> (only people who have completed game can comment and rate)</div>
+                    </header>
+                    <main class="modal_content">
+                        <div class="flex-table header">
+                            <div class="flex-row  first">Team Name</div>
+                            <div class="flex-row first">Comment</div>
+                            <div class="flex-row  first">Rating</div>
+                            <div class="flex-row  first">Testing?</div>
+                            <div class="flex-row ">date</div>
+                        </div>
+                        <?php
+                        $index = 1;
+                        foreach($resultComments as $comment) { ?>
+                            <div class="flex-table row">
+                                <div class="flex-row"><?php echo $comment->teamName ?></div>
+                                <div class="flex-row"><?php echo $comment->gameCommentPublic  ?></div>
+                                <div class="flex-row"><?php echo $comment->gameRating ?></div>
+                                <div class="flex-row "><?php echo $comment->testing ?></div>
+                                <div class="flex-row "><?php echo $comment->formattedDate ?></div>
+                            </div>
+                            <?php $index++; } ?>
                     </main>
                     <footer class="modal_footer">
                         <button class="modal-close">Close</button>
@@ -1028,7 +1062,7 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
                             data-wp-on--click="actions.closeHelp"
                             aria-controls="<?php echo esc_attr( $unique_id ); ?>"
                     >
-                        <?php esc_html_e( 'Close', 'escapeout-game' ); ?>
+                        <?php esc_html_e( 'Close Help', 'escapeout-game' ); ?>
                     </button>
                 </div>
             </div>

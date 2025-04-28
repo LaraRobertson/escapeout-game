@@ -14,4 +14,5 @@ export function removeLocalStorage() {
     localStorage.removeItem("hintUsedArray");
     localStorage.removeItem("gdo");
     localStorage.removeItem("gameSlug");
+    localStorage.removeItem("helpVisible");
 }

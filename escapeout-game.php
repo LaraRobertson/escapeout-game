@@ -134,6 +134,19 @@ function escapeout_register_routes() {
      */
     register_rest_route(
         'escapeout/v1',
+        '/game-score-delete/(?P<id>\d+)',
+        array(
+            'methods'  => 'DELETE',
+            'callback' => 'escapeout_delete_game_score',
+            'permission_callback' => 'logged_in_permission_callback'
+        )
+    );
+
+    /**
+     * PATCH
+     */
+    register_rest_route(
+        'escapeout/v1',
         '/game-score-comment/(?P<id>\d+)',
         array(
             'methods'  => 'PATCH',
@@ -141,7 +154,6 @@ function escapeout_register_routes() {
             'permission_callback' => 'logged_in_permission_callback'
         )
     );
-
     /**
      * PATCH
      */
@@ -170,6 +182,16 @@ function escapeout_register_routes() {
         array(
             'methods'  => 'GET',
             'callback' => 'escapeout_get_game_score_by_id',
+            'permission_callback' => '__return_true'
+        )
+    );
+
+    register_rest_route(
+        'escapeout/v1',
+        '/game-stats/(?P<id>\d+)',
+        array(
+            'methods'  => 'GET',
+            'callback' => 'escapeout_get_game_stats_by_id',
             'permission_callback' => '__return_true'
         )
     );
@@ -243,6 +265,20 @@ function escapeout_update_game_score_complete( $request ) {
 
     return $rows;
 }
+function escapeout_delete_game_score( $request ) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'game_score';
+
+    $rows = $wpdb->delete(
+        $table_name,
+
+        array(
+            'id' => $request['id'],
+        ),
+    );
+
+    return $rows;
+}
 
 function escapeout_update_game_score_comment( $request ) {
     global $wpdb;
@@ -271,7 +307,7 @@ function escapeout_update_game_score_comment_approve( $request ) {
     $rows = $wpdb->update(
         $table_name,
         array(
-            'gameCommentPublicApprove' => $request['gameCommentPublicApprove'],
+            'gameCommentPublicApproved' => $request['gameCommentPublicApproved'],
         ),
 
         array(
@@ -348,11 +384,13 @@ function escapeout_get_game_score($request) {
     $table_name = $wpdb->prefix . 'game_score';
 
     if ($userEmail && $gameID) {
-		if ($timeStart) {
-			$results = $wpdb->get_results("SELECT * FROM `$table_name` WHERE `gameID` = '$gameID' AND `userEmail` = '$userEmail' AND `timeStart` = '$timeStart'");
-		} else {
-			$results = $wpdb->get_results( "SELECT * FROM `$table_name` WHERE `gameID` = '$gameID' AND `userEmail` = '$userEmail'" );
-		}
+        if ($timeStart) {
+            $results = $wpdb->get_results("SELECT * FROM `$table_name` WHERE `gameID` = '$gameID' AND `userEmail` = '$userEmail' AND `timeStart` = '$timeStart'");
+        } else {
+            $results = $wpdb->get_results("SELECT * FROM `$table_name` WHERE `gameID` = '$gameID' AND `userEmail` = '$userEmail'");
+        }
+    } elseif ($gameID) {
+           $results = $wpdb->get_results( "SELECT * FROM `$table_name` WHERE `gameID` = '$gameID'" );
     } else {
 		/* is this what I really want? */
         $results = $wpdb->get_results("SELECT * FROM $table_name");
@@ -409,6 +447,10 @@ function escapeout_get_game_score_by_id( $request ) {
 
     return $results[0];
 }
+
+
+
+
 function escapeout_get_eo_game_by_id( $request ) {
 	$id = $request['id'];
 	global $wpdb;
@@ -799,13 +841,18 @@ function admin_body_class( $classes ) {
 
 	return $classes;
 }
-function my_admin_style() {
-	wp_enqueue_style(
+/*current theme does not have a style-admin.css */
+/*
+ * function my_admin_style() {
+ 	wp_enqueue_style(
 		'my-admin-styles',
 		get_stylesheet_directory_uri() . '/style-admin.css'
 	);
 }
 add_action('admin_enqueue_scripts', 'my_admin_style');
+*/
+
+
 function weplugins_query_vars( $qvars ) {
 	$qvars[] = 'city';
 	$qvars[] = 'location';
