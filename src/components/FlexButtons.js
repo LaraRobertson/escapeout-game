@@ -180,7 +180,7 @@ export default function FlexButtons({attributes,setAttributes}) {
                                  style={{fontSize: "15px"}}/>
                     <TextControl
                         value={attributes.publicMapText} onChange={updatePublicMapText}
-                        style={{display:"none", fontSize: "20px"}}/>
+                        style={{fontSize: "20px"}}/>
 
 
                 </div>

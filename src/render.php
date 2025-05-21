@@ -283,6 +283,7 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
         <?php if ($key_1_value === "eo-test-game") {?>
             <div style="text-align:center;background-color:<?php echo $attributes['textColor'];?>; color:<?php echo $attributes['bgColor']?>">TESTING</div>
         <?php } ?>
+
         <?php /* user is logged in */ ?>
              <div data-wp-bind--hidden="!context.userIsLoggedIn">
             Welcome  <strong><?php echo $displayName; ?></strong>
@@ -292,8 +293,9 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
             </div>
         <?php /* user is NOT logged in and game requires Login */ ?>
         <div data-wp-bind--hidden="!context.userMustBeLoggedIn">
-            <div data-wp-bind--hidden="context.userIsLoggedIn">
-                This game requires you to log in to play.
+            <div style="padding:5px" data-wp-bind--hidden="context.userIsLoggedIn">
+                This game requires you to <a href="<?php echo $siteUrl . "/find-a-game" ?>"
+                                             style="padding: 0 5px 5px 5px; background-color:<?php echo $attributes['textColor'];?>; color:<?php echo $attributes['bgColor']?>">log in</a> to play.
             </div>
             <div data-wp-bind--hidden="!context.userIsLoggedIn">
             </div>
@@ -328,6 +330,18 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
         >
             <?php esc_html_e( 'Comments/Ratings', 'escapeout-game' ); ?>
         </button>
+        <hr/>
+        <button style="color:<?php echo $attributes['linkColor']?>;background-color:<?php echo $attributes['bgColor']?>" id="showLevel" class="show-inline">what are levels?</button>
+        <div id="hideLevelContainer" class="hide">
+            Each game has a skill level:
+            <ul>
+                <li>Level 0 – very easy, play to learn how game works</li>
+                <li>Level 1 – similar to a scavenger hunt with a little deduction</li>
+                <li>Level 2 – some scavenger hunt style puzzles and more deduction</li>
+                <li>Level 3 – more complicated puzzles with most requiring deduction</li>
+            </ul>
+            <button style="color:<?php echo $attributes['linkColor']?>;background-color:<?php echo $attributes['bgColor']?>" id="hideLevel" class="">hide level info</button>
+        </div>
         <hr/>
         <div style="text-align:center; font-weight:bold; font-size: 1.2em;">Mission: <?php echo $attributes['mission'] ?></div>
 
@@ -1053,17 +1067,23 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
             </div><!-- end game-container -->
             <div class="help-container" data-wp-bind--hidden="!state.helpVisible">
                 <div class='help-inner' style="background-color:<?php echo $attributes['bgColor']?>">
+                    <header class="modal_header">
+                        <div><strong>Help</strong></div>
+                    </header>
                     <div data-wp-bind--hidden="!state.zoneHelpVisible"><strong>Zones</strong><br /><?php echo $attributes["zoneText"] ?></div>
                     <div data-wp-bind--hidden="!state.puzzleHelpVisible"><strong>Puzzles</strong><br /><?php echo $attributes["puzzleText"] ?></div>
                     <div data-wp-bind--hidden="!state.clueHelpVisible"><strong>Clues</strong><br /><?php echo $attributes["clueText"] ?></div>
                     <div data-wp-bind--hidden="!state.hintHelpVisible"><strong>Hints</strong><br /><?php echo $attributes["hintText"] ?></div>
 
-                    <button class="button"
-                            data-wp-on--click="actions.closeHelp"
-                            aria-controls="<?php echo esc_attr( $unique_id ); ?>"
-                    >
-                        <?php esc_html_e( 'Close Help', 'escapeout-game' ); ?>
-                    </button>
+                    <footer class="modal_footer">
+                        <button class="button"
+                                data-wp-on--click="actions.closeHelp"
+                                aria-controls="<?php echo esc_attr( $unique_id ); ?>"
+                        >
+                            <?php esc_html_e( 'Close Help', 'escapeout-game' ); ?>
+                        </button>
+                    </footer>
+
                 </div>
             </div>
             <div class="alert-container" data-wp-bind--hidden="!state.alertVisible">
