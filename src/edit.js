@@ -148,7 +148,7 @@ export default function Edit( { attributes, setAttributes } ) {
 			newPlayZoneObject.id = zoneID
 			setAttributes({playZones: attributes.playZones.concat([newPlayZoneObject])})
 			/* set gameID */
-			let gameIDnew = zoneID + "-" + attributes.gameName.replace(/ /g, "-");;
+			let gameIDnew = zoneID + "-" + attributes.gameName.replace(/ /g, "-");
 			setAttributes({ gameID: gameIDnew })
 		}
 	}

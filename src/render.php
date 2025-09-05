@@ -214,7 +214,7 @@ wp_interactivity_state(
         'nonce' => $nonce
     )
 );
-//print_r($attributes);
+print_r($attributes);
 //https://stackoverflow.com/questions/2699086/sort-a-2d-array-by-a-column-value
 usort($playZones, fn($a, $b) => $a['order'] <=> $b['order']);
 usort($puzzleArray, fn($a, $b) => $a['order'] <=> $b['order']);
@@ -331,7 +331,7 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
             <?php esc_html_e( 'Comments/Ratings', 'escapeout-game' ); ?>
         </button>
         <hr/>
-        <button style="color:<?php echo $attributes['linkColor']?>;background-color:<?php echo $attributes['bgColor']?>" id="showLevel" class="show-inline">what are levels?</button>
+        <button id="showLevel" class="show-inline">what are levels?</button>
         <div id="hideLevelContainer" class="hide">
             Each game has a skill level:
             <ul>
@@ -340,7 +340,7 @@ $gameContext = array( 'shift' => $attributes['shift'], 'showClueArray' => [], 'f
                 <li>Level 2 – some scavenger hunt style puzzles and more deduction</li>
                 <li>Level 3 – more complicated puzzles with most requiring deduction</li>
             </ul>
-            <button style="color:<?php echo $attributes['linkColor']?>;background-color:<?php echo $attributes['bgColor']?>" id="hideLevel" class="">hide level info</button>
+            <button id="hideLevel" class="">hide level info</button>
         </div>
         <hr/>
         <div style="text-align:center; font-weight:bold; font-size: 1.2em;">Mission: <?php echo $attributes['mission'] ?></div>
